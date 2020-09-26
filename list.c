@@ -483,8 +483,8 @@ list_unique (struct list *list, struct list *duplicates,
     return;
 
   elem = list_begin (list);
-  while ((next = list_next (elem)) != list_end (list))
-    if (!less (elem, next, aux) && !less (next, elem, aux)) 
+  while ((next = list_next (elem)) != list_end (list)){
+	if (!less (elem, next, aux) && !less (next, elem, aux)) 
       {
         list_remove (next);
         if (duplicates != NULL)
@@ -492,6 +492,7 @@ list_unique (struct list *list, struct list *duplicates,
       }
     else
       elem = next;
+  }
 }
 
 /* Returns the element in LIST with the largest value according
@@ -570,24 +571,60 @@ struct list_elem * list_find_nth(struct list *list, int index){
 void delete_list(struct list *list){
 	struct list_elem *ptr = list_begin(list);
 //	struct list_elem *del;
-	int cnt = 0;
 	if (ptr != list_end(list)){
-//		for(; ptr != list_end(list);){
-//			del = ptr;
-//			ptr = list_next(ptr);
-//			list_remove();
-//			if(cnt == index)
-//		}
 	 for (; ptr != list_end (list); ptr = list_remove (ptr))
      {
 		continue;
 	 }
 		free(list);
-		//printf("\n");
 	}
 
 
 
 }
 
+bool less_func(const struct list_elem *a, const struct list_elem *b, void *aux){
+	struct list_item *a_item = list_entry(a, struct list_item, elem);
+	struct list_item *b_item = list_entry(b, struct list_item, elem);
+	if(a_item->data >= b_item->data)
+		return false;
+	else
+		return true;
+}
 
+
+void list_swap(struct list_elem *e1, struct list_elem *e2){
+	ASSERT (e1 != NULL);
+	ASSERT (e2 != NULL);
+	struct list_elem *temp_elem;
+	
+	temp_elem = e1->next;
+	e1->next = e2->next;
+	e2->next = temp_elem;
+
+	e1->next->prev = e1;
+	e2->next->prev = e2;
+	
+
+	temp_elem = e1->prev;
+	e1->prev = e2->prev;
+	e2->prev = temp_elem;
+
+	e1->prev->next = e1;
+	e2->prev->next = e2;
+}
+
+void list_shuffle(struct list *list){
+	int size = list_size(list);
+	int cnt = 0, index1, index2;
+	struct list_elem *e1, *e2;
+	srand(time(NULL));
+	while(cnt < size){
+		index1 = rand() % size;
+		index2 = rand() % size;
+		e1 = list_find_nth(list, index1);
+		e2 = list_find_nth(list, index2);
+		list_swap(e1,e2);
+		cnt++;
+	}
+}

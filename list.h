@@ -87,6 +87,8 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
+
 /* List element. */
 struct list_elem 
   {
@@ -161,6 +163,8 @@ typedef bool list_less_func (const struct list_elem *a,
                              const struct list_elem *b,
                              void *aux);
 
+bool less_func(const struct list_elem*, const struct list_elem*, void* );
+
 /* Operations on lists with ordered elements. */
 void list_sort (struct list *,
                 list_less_func *, void *aux);
@@ -177,4 +181,7 @@ struct list_elem *list_min (struct list *, list_less_func *, void *aux);
 void dump_list(struct list *list);
 struct list_elem *list_find_nth(struct list*, int index);
 void delete_list(struct list *list);
+void list_swap(struct list_elem*, struct list_elem*);
+void list_shuffle(struct list *list);
+
 #endif /* lib/kernel/list.h */
