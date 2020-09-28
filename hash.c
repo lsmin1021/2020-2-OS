@@ -11,6 +11,8 @@
 
 #define ASSERT(CONDITION) assert(CONDITION)	// patched for proj0-2
 
+#define UNUSED(x) (void)(x) //사용하지 않는 variable 처리
+
 #define list_elem_to_hash_elem(LIST_ELEM)                       \
         list_entry(LIST_ELEM, struct hash_elem, list_elem)
 
@@ -430,3 +432,71 @@ remove_elem (struct hash *h, struct hash_elem *e)
   list_remove (&e->list_elem);
 }
 
+
+bool hash_less (const struct hash_elem *a, const struct hash_elem *b, void *aux){
+	UNUSED(aux);
+	struct hash_item *a_item = hash_entry(a, struct hash_item, elem);
+	struct hash_item *b_item = hash_entry(b, struct hash_item, elem);
+	if(a_item->data >= b_item->data)
+		return false;
+	else
+		return true;
+	return false;
+}
+
+unsigned hash_int_func(const struct hash_elem *e, void *aux){
+	UNUSED(aux);
+	struct hash_item *a_item = hash_entry(e, struct hash_item, elem);
+	
+	return hash_int(a_item->data);
+}
+
+
+void hash_dump(struct hash *hash){
+	ASSERT (hash != NULL);
+	size_t i;
+	if(!hash_empty(hash)){
+		struct list_elem *ptr;
+		for (i = 0; i < hash->bucket_cnt; i++) {
+			struct list *bucket = &hash->buckets[i];
+			if (!list_empty (bucket)) 
+			{
+				ptr = list_begin(bucket);
+				for(;ptr != list_end(bucket);ptr = list_next(ptr)){
+					struct hash_elem *hash_ptr = list_elem_to_hash_elem(ptr);
+
+					struct hash_item *temp = hash_entry(hash_ptr, struct hash_item, elem);
+					int temp_data = temp->data;
+					printf("%d ",temp_data);
+				}
+			}
+		}    
+		printf("\n");
+	}
+}
+
+
+/* hash_action_func */
+void destructor_func(struct hash_elem *e, void *aux){
+	UNUSED(aux);
+	free(e);
+}
+void square_func(struct hash_elem *e, void *aux){
+	UNUSED(aux);
+	struct hash_item *temp_item = hash_entry(e, struct hash_item, elem);
+	temp_item->data = temp_item->data * temp_item->data;
+}
+void triple_func(struct hash_elem *e, void *aux){
+	UNUSED(aux);
+	struct hash_item *temp_item = hash_entry(e, struct hash_item, elem);
+	temp_item->data = temp_item->data * temp_item->data * temp_item->data;
+
+
+}
+
+/* Returns a hash of integer I version 2 */
+unsigned hash_int_2 (int i) 
+{
+	int num = i * i * 3;
+  return hash_bytes (&num, sizeof num);
+}

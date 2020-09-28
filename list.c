@@ -2,6 +2,8 @@
 #include <assert.h>	// Instead of	#include "../debug.h"
 #define ASSERT(CONDITION) assert(CONDITION)	// patched for proj0-2
 
+#define UNUSED(x) (void)(x)
+
 /* Our doubly linked lists have two header elements: the "head"
    just before the first element and the "tail" just after the
    last element.  The `prev' link of the front header is null, as
@@ -553,19 +555,11 @@ struct list_elem * list_find_nth(struct list *list, int index){
 	int cnt = 0;
 	if (ptr != list_end(list)){
 		for(; ptr != list_end(list); ptr = list_next(ptr), cnt++){
-			//struct list_item *temp = list_entry(ptr, struct list_item, elem);
-			//int temp_data = temp->data;
-			//printf("%d ",temp_data);
 			if(cnt == index)
 				break;
 		}
-		
-		//printf("\n");
 	}
 	return ptr;
-
-
-
 }
 
 void delete_list(struct list *list){
@@ -584,6 +578,7 @@ void delete_list(struct list *list){
 }
 
 bool less_func(const struct list_elem *a, const struct list_elem *b, void *aux){
+	UNUSED(aux);
 	struct list_item *a_item = list_entry(a, struct list_item, elem);
 	struct list_item *b_item = list_entry(b, struct list_item, elem);
 	if(a_item->data >= b_item->data)
@@ -593,25 +588,25 @@ bool less_func(const struct list_elem *a, const struct list_elem *b, void *aux){
 }
 
 
-void list_swap(struct list_elem *e1, struct list_elem *e2){
-	ASSERT (e1 != NULL);
-	ASSERT (e2 != NULL);
+void list_swap(struct list_elem *a, struct list_elem *b){
+	ASSERT (a != NULL);
+	ASSERT (b != NULL);
 	struct list_elem *temp_elem;
 	
-	temp_elem = e1->next;
-	e1->next = e2->next;
-	e2->next = temp_elem;
+	temp_elem = a->next;
+	a->next = b->next;
+	b->next = temp_elem;
 
-	e1->next->prev = e1;
-	e2->next->prev = e2;
+	a->next->prev = a;
+	b->next->prev = b;
 	
 
-	temp_elem = e1->prev;
-	e1->prev = e2->prev;
-	e2->prev = temp_elem;
+	temp_elem = a->prev;
+	a->prev = b->prev;
+	b->prev = temp_elem;
 
-	e1->prev->next = e1;
-	e2->prev->next = e2;
+	a->prev->next = a;
+	b->prev->next = b;
 }
 
 void list_shuffle(struct list *list){

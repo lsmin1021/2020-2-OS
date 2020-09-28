@@ -22,7 +22,7 @@
 typedef unsigned long elem_type;
 
 /* Number of bits in an element. */
-#define ELEM_BITS (sizeof (elem_type) * CHAR_BIT)
+#define ELEM_BITS (sizeof (elem_type) * CHAR_BIT) //CHAR_BIT : 8
 
 /* From the outside, a bitmap is an array of bits.  From the
    inside, it's an array of elem_type (defined above) that
@@ -163,7 +163,6 @@ bitmap_mark (struct bitmap *b, size_t bit_idx)
 {
   size_t idx = elem_idx (bit_idx);
   elem_type mask = bit_mask (bit_idx);
-
   /* This is equivalent to `b->bits[idx] |= mask' except that it
      is guaranteed to be atomic on a uniprocessor machine.  See
      the description of the OR instruction in [IA32-v2b]. */
@@ -206,7 +205,7 @@ bitmap_test (const struct bitmap *b, size_t idx)
   ASSERT (idx < b->bit_cnt);
   return (b->bits[elem_idx (idx)] & bit_mask (idx)) != 0;
 }
-
+
 /* Setting and testing multiple bits. */
 
 /* Sets all bits in B to VALUE. */
@@ -364,7 +363,7 @@ bitmap_write (const struct bitmap *b, struct file *file)
   return file_write_at (file, b->bits, size, 0) == size;
 }
 #endif /* FILESYS */
-
+
 /* Debugging. */
 
 /* Dumps the contents of B to the console as hexadecimal. */
@@ -374,3 +373,30 @@ bitmap_dump (const struct bitmap *b)
   hex_dump (0, b->bits, byte_cnt (b->bit_cnt)/2, false);
 }
 
+/* Print bitmap data */
+void dump_bitmap(struct bitmap *b){
+	int i=0;
+	int size = bitmap_size(b);
+	for(i=0;i<size; i++){
+		if(bitmap_test(b, i))
+			printf("1");
+		else
+			printf("0");
+	}
+	printf("\n");
+
+}
+
+struct bitmap *bitmap_expand(struct bitmap *bitmap, int size){
+	
+	if (bitmap != NULL){
+		int bit_cnt = bitmap_size(bitmap);
+		bitmap->bit_cnt = bit_cnt+size;
+		bitmap->bits = realloc (bitmap->bits, byte_cnt (bit_cnt+size));
+		if (bitmap->bits != NULL || bit_cnt+size == 0){
+			bitmap_set_multiple (bitmap, bit_cnt,size, false);
+			return bitmap;
+		}
+    }
+	return NULL;
+}
