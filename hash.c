@@ -498,5 +498,6 @@ void triple_func(struct hash_elem *e, void *aux){
 unsigned hash_int_2 (int i) 
 {
 	int num = i * i * 3;
-  return hash_bytes (&num, sizeof num);
+	unsigned bb =  hash_bytes (&num, sizeof num);
+	return bb/5;
 }
