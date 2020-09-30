@@ -441,7 +441,6 @@ bool hash_less (const struct hash_elem *a, const struct hash_elem *b, void *aux)
 		return false;
 	else
 		return true;
-	return false;
 }
 
 unsigned hash_int_func(const struct hash_elem *e, void *aux){

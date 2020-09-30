@@ -26,7 +26,6 @@
    cases in list processing.  For example, take a look at
    list_remove(): it takes only two pointer assignments and no
    conditionals.  That's a lot simpler than the code would be
-   without header elements.
 
    (Because only one of the pointers in each header element is used,
    we could in fact combine them into a single header element
@@ -564,17 +563,15 @@ struct list_elem * list_find_nth(struct list *list, int index){
 
 void delete_list(struct list *list){
 	struct list_elem *ptr = list_begin(list);
-//	struct list_elem *del;
+	struct list_elem *del = NULL;
 	if (ptr != list_end(list)){
-	 for (; ptr != list_end (list); ptr = list_remove (ptr))
-     {
-		continue;
-	 }
+		for (; ptr != list_end (list); ptr = list_remove (ptr)){
+			if(del != NULL)
+				free(del);
+			del = ptr;
+		}
 		free(list);
 	}
-
-
-
 }
 
 bool less_func(const struct list_elem *a, const struct list_elem *b, void *aux){
