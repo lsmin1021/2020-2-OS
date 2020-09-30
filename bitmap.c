@@ -384,11 +384,9 @@ void dump_bitmap(struct bitmap *b){
 			printf("0");
 	}
 	printf("\n");
-
 }
 
 struct bitmap *bitmap_expand(struct bitmap *bitmap, int size){
-	
 	if (bitmap != NULL){
 		int bit_cnt = bitmap_size(bitmap);
 		bitmap->bit_cnt = bit_cnt+size;

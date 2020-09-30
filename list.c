@@ -549,6 +549,7 @@ void dump_list(struct list *list){
 	return;
 
 }
+
 struct list_elem * list_find_nth(struct list *list, int index){
 	struct list_elem *ptr = list_begin(list);
 	int cnt = 0;
@@ -596,7 +597,6 @@ void list_swap(struct list_elem *a, struct list_elem *b){
 
 	a->next->prev = a;
 	b->next->prev = b;
-	
 
 	temp_elem = a->prev;
 	a->prev = b->prev;

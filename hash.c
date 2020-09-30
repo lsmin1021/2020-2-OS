@@ -446,7 +446,6 @@ bool hash_less (const struct hash_elem *a, const struct hash_elem *b, void *aux)
 unsigned hash_int_func(const struct hash_elem *e, void *aux){
 	UNUSED(aux);
 	struct hash_item *a_item = hash_entry(e, struct hash_item, elem);
-	
 	return hash_int(a_item->data);
 }
 
@@ -489,14 +488,18 @@ void triple_func(struct hash_elem *e, void *aux){
 	UNUSED(aux);
 	struct hash_item *temp_item = hash_entry(e, struct hash_item, elem);
 	temp_item->data = temp_item->data * temp_item->data * temp_item->data;
-
-
 }
 
-/* Returns a hash of integer I version 2 */
+/* Returns a hash of integer I version 2
+ * user defined hash function
+ * */
 unsigned hash_int_2 (int i) 
 {
 	int num = i * i * 3;
-	unsigned bb =  hash_bytes (&num, sizeof num);
-	return bb/5;
+	unsigned hash;
+	size_t size = sizeof num;
+	hash = FNV_32_BASIS;
+	while (size-- > 0)
+		hash = (hash * FNV_32_PRIME) ^ (num*size);
+	return hash;
 }
